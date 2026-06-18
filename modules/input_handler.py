@@ -7,7 +7,7 @@ NUMERIC_FIELDS = {
     "cash_balance": ("Cash balance", False),
     "monthly_revenue": ("Monthly revenue", False),
     "monthly_expenses": ("Monthly expenses", False),
-    "existing_loan_payment": ("Existing monthly loan payment", False),
+    "existing_loan_payment": ("Existing monthly debt payment", False),
     "loan_amount": ("New loan amount", False),
     "interest_rate": ("Annual interest rate (%)", False),
     "repayment_months": ("Repayment months", True),

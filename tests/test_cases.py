@@ -62,7 +62,7 @@ class CashflowLoanPlannerTests(unittest.TestCase):
             "repayment_months": 12,
         }
         result = simulate_cashflow(data)
-        self.assertEqual(result["decision"], "RISKY")
+        self.assertEqual(result["decision"], "SAFE")
         self.assertGreaterEqual(result["risk_data"]["min_cash_balance"], 0)
 
     def test_zero_loan_case(self):
@@ -135,6 +135,35 @@ class CashflowLoanPlannerTests(unittest.TestCase):
         self.assertGreaterEqual(max_safe, 0)
         safe_result = simulate_cashflow({**data, "loan_amount": max_safe})
         self.assertEqual(safe_result["decision"], "SAFE")
+
+    def test_dscr(self):
+        from modules.calculator import calculate_dscr
+        self.assertEqual(round(calculate_dscr(7500, 3537), 2), 2.12)
+        self.assertEqual(calculate_dscr(5000, 0), float('inf'))
+
+    def test_dti(self):
+        from modules.calculator import calculate_dti
+        self.assertEqual(round(calculate_dti(3000, 10000), 2), 30.0)
+        self.assertEqual(calculate_dti(1000, 0), 100.0)
+        self.assertEqual(calculate_dti(0, 0), 0.0)
+
+    def test_scenarios(self):
+        from modules.simulator import run_scenarios
+        data = {
+            "cash_balance": 50000,
+            "monthly_revenue": 40000,
+            "monthly_expenses": 20000,
+            "existing_loan_payment": 2000,
+            "loan_amount": 30000,
+            "interest_rate": 10,
+            "repayment_months": 12,
+        }
+        res = run_scenarios(data)
+        self.assertIn("Base Case", res)
+        self.assertIn("Best Case", res)
+        self.assertIn("Worst Case", res)
+        self.assertGreaterEqual(res["Best Case"]["final_cash"], res["Base Case"]["final_cash"])
+        self.assertLessEqual(res["Worst Case"]["final_cash"], res["Base Case"]["final_cash"])
 
 
 if __name__ == "__main__":

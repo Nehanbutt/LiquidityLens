@@ -250,12 +250,7 @@ def _alerts_block(results: Dict[str, Any], styles: Dict[str, ParagraphStyle]) ->
 
     alerts: List[str] = list(inputs.get("validation_warnings", []))
     alerts.extend(risk_data.get("alerts", []))
-    if risk_data.get("over_leveraged"):
-        alerts.append("Loan is over-leveraged relative to revenue/cashflow")
-    if risk_data.get("low_buffer"):
-        alerts.append("Cash buffer is below one month of expenses")
-    if risk_data.get("unstable"):
-        alerts.append("Cashflow is unstable in at least one month")
+    alerts.extend(risk_data.get("reasons", []))
 
     deduped: List[str] = []
     for alert in alerts:
@@ -344,12 +339,13 @@ def generate_pdf_report(results: Dict[str, Any], max_safe_loan: float, output_pa
 
     story.append(_summary_cards(results, max_safe_loan, styles))
     story.append(Spacer(1, 4))
+    metrics = results["risk_data"].get("metrics", {})
+    reserve = metrics.get("cash_reserve_months", "—")
     liquidity_note = Paragraph(
-        f"Liquidity Status: <b>{results['risk_data']['liquidity_status']}</b>",
+        f"Cash Reserve: <b>{reserve} months</b> | DSCR: <b>{metrics.get('dscr', '—')}</b> | DTI: <b>{metrics.get('dti', '—')}%</b>",
         ParagraphStyle("LiquidityNote", parent=styles["body"], alignment=TA_CENTER, textColor=MID_GRAY, spaceBefore=4),
     )
     story.append(liquidity_note)
-
     story.append(Paragraph("Alerts", styles["section"]))
     story.append(_alerts_block(results, styles))
 

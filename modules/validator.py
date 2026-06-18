@@ -18,7 +18,6 @@ REQUIRED_FIELDS = [
     "cash_balance",
     "monthly_revenue",
     "monthly_expenses",
-    "existing_loan_payment",
     "loan_amount",
     "interest_rate",
     "repayment_months",
@@ -70,6 +69,16 @@ def validate_inputs(data: Dict[str, Any]) -> Dict[str, Any]:
         elif field in FLOAT_FIELDS:
             normalized[field] = float(value)
 
+    # Optional existing_loan_payment (defaults to 0 if not provided)
+    elp = data.get("existing_loan_payment")
+    if elp in (None, ""):
+        normalized["existing_loan_payment"] = 0.0
+    else:
+        try:
+            normalized["existing_loan_payment"] = float(elp)
+        except (ValueError, TypeError):
+            errors.append("existing_loan_payment must be numeric")
+
     if errors:
         raise ValidationError(errors)
 
@@ -100,4 +109,16 @@ def validate_inputs(data: Dict[str, Any]) -> Dict[str, Any]:
         warnings.append("high debt burden")
 
     normalized["validation_warnings"] = warnings
+
+    # Pass through optional growth rate fields (default 0)
+    for opt_field in ("revenue_growth_rate", "expense_growth_rate"):
+        normalized[opt_field] = float(data.get(opt_field, 0.0))
+
+    # Pass through existing_loan_months if provided (for schedule dropout logic)
+    elm = data.get("existing_loan_months")
+    try:
+        normalized["existing_loan_months"] = int(elm) if elm not in (None, "") else 0
+    except (ValueError, TypeError):
+        normalized["existing_loan_months"] = 0
+
     return normalized

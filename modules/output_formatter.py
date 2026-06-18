@@ -58,19 +58,17 @@ def generate_report(results: Dict[str, Any]) -> str:
     summary = [
         "SUMMARY",
         f"Decision          : {results['decision']}",
+        f"Risk Score        : {risk_data.get('risk_score', 0)} / 100",
         f"Risk Level        : {risk_data['risk_level']}",
-        f"Liquidity Status  : {risk_data['liquidity_status']}",
+        f"Cash Reserve      : {risk_data.get('metrics', {}).get('cash_reserve_months', '—')} months",
+        f"DSCR              : {risk_data.get('metrics', {}).get('dscr', '—')}",
+        f"DTI               : {risk_data.get('metrics', {}).get('dti', '—')}%",
         f"Monthly EMI       : {_format_currency(results['emi'])}",
     ]
 
     alerts = list(validation_warnings)
     alerts.extend(risk_data.get("alerts", []))
-    if risk_data.get("over_leveraged"):
-        alerts.append("over-leveraged")
-    if risk_data.get("low_buffer"):
-        alerts.append("low cash buffer")
-    if risk_data.get("unstable"):
-        alerts.append("cashflow instability")
+    alerts.extend(risk_data.get("reasons", []))
 
     deduped_alerts = []
     for alert in alerts:
