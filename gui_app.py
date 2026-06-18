@@ -4,6 +4,25 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+
+def _ensure_dependencies():
+    required_packages = ["reportlab", "matplotlib"]
+    missing = []
+    for pkg in required_packages:
+        try:
+            __import__(pkg)
+        except ImportError:
+            missing.append(pkg)
+    if missing:
+        print(f"Installing missing dependencies: {', '.join(missing)}...")
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", *missing])
+            print("Dependencies installed successfully.")
+        except Exception as e:
+            print(f"Failed to install dependencies: {e}")
+
+_ensure_dependencies()
+
 import tkinter as tk
 from datetime import datetime
 from tkinter import filedialog, messagebox, ttk

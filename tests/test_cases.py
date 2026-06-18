@@ -1,4 +1,19 @@
-"""Unit tests for the Cashflow Loan Planner."""
+"""
+Unit tests for the Cashflow Loan Planner.
+
+Purpose of this file:
+This file ensures that the core mathematical calculations and financial logic of the application
+(such as simulate_cashflow, calculate_emi, and find_max_safe_loan) work correctly.
+
+It automatically simulates different business scenarios:
+- Healthy businesses (to ensure safe loans are approved)
+- High debt pressure businesses (to ensure risky loans are flagged)
+- Break-even businesses (to check edge cases)
+- Input validation (feeding bad data like negative balances to ensure the app catches it)
+
+Running these tests helps guarantee that future changes to the codebase do not accidentally
+break the core financial logic.
+"""
 
 import unittest
 

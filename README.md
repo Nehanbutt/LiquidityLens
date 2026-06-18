@@ -26,7 +26,6 @@ The existing calculation engine (`modules/calculator.py`, `modules/simulator.py`
 cashflow_loan_planner/
 ├── gui_app.py                  ← Desktop GUI (run this)
 ├── main.py                     ← Original CLI entry-point (still works)
-├── requirements.txt
 ├── modules/
 │   ├── calculator.py
 │   ├── input_handler.py
@@ -47,36 +46,22 @@ cashflow_loan_planner/
   - macOS: comes with the official python.org installer
   - Windows: comes with the official python.org installer
   - Ubuntu/Debian Linux: `sudo apt install python3-tk`
-- **reportlab** and **matplotlib** (install via pip — see below)
+
+> **⚡ Zero Setup Required:** You do **NOT** need to create virtual environments (`venv`) or run any `pip install` commands. The app will automatically fetch any required third-party dependencies the first time you run it!
 
 ---
 
-## Setup (one-time)
+## Setup & Running
 
 ```bash
 # 1. Clone / unzip the project, then enter the folder
 cd cashflow_loan_planner
 
-# 2. (Recommended) create a virtual environment
-python3 -m venv .venv
-
-# Activate it:
-#   Windows:  .venv\Scripts\activate
-#   macOS/Linux: source .venv/bin/activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-```
-
----
-
-## Running the GUI
-
-```bash
+# 2. Run the application directly!
 python gui_app.py
 ```
 
-The window opens immediately. No internet connection required.
+The window opens immediately upon running. No internet connection required.
 
 ### Using the app
 
@@ -127,7 +112,5 @@ The output ends up in the `dist/` folder.
 | Problem | Fix |
 |---------|-----|
 | `ModuleNotFoundError: No module named 'tkinter'` | `sudo apt install python3-tk` (Linux) or re-install Python from python.org (Windows/macOS) |
-| `ModuleNotFoundError: No module named 'reportlab'` | `pip install reportlab` |
-| `ModuleNotFoundError: No module named 'matplotlib'` | `pip install matplotlib` |
 | Window opens but is tiny / cut off | Drag the corner to resize — the layout is fully responsive |
 | PDF export fails silently | Check you have write permission to the chosen folder |
